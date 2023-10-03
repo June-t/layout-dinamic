@@ -63,28 +63,22 @@ const GridLayoutComponent: React.FC = () => {
       return;
     }
 
-    const zip = new JSZip(); // Usamos JSZip directamente
+    const zip = new JSZip();
 
     images.forEach((item) => {
-      // Extract base64 data from the data URL
       const base64Data = item.imagen?.split(",")[1];
       if (base64Data) {
-        // Convert base64 to binary
         const binaryData = window.atob(base64Data);
-        // Create a Uint8Array from binary data
         const uint8Array = new Uint8Array(binaryData.length);
         for (let i = 0; i < binaryData.length; i++) {
           uint8Array[i] = binaryData.charCodeAt(i);
         }
-        // Create a Blob from Uint8Array
         const blob = new Blob([uint8Array], { type: "image/png" });
-        // Add the Blob to the zip file
         zip.file(`${uuidv4()}-${item.i}.png`, blob);
       }
     });
 
     zip.generateAsync({ type: "blob" }).then((blob) => {
-      // Trigger the download
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
